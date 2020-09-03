@@ -1,15 +1,3 @@
-//===----------------------------------------------------------------------===//
-//
-//                         BusTub
-//
-// clock_replacer.h
-//
-// Identification: src/include/buffer/clock_replacer.h
-//
-// Copyright (c) 2015-2019, Carnegie Mellon University Database Group
-//
-//===----------------------------------------------------------------------===//
-
 #pragma once
 
 #include <list>
@@ -47,6 +35,14 @@ class ClockReplacer : public Replacer {
 
  private:
   // TODO(student): implement me!
+  size_t clock_hand;
+  size_t buffer_size;
+  std::vector<bool> ref_f;  // Whether unpined recently
+  std::vector<bool> in_f;   // Whether in the replacer
+
+  std::mutex clkh_latch;
+  std::mutex ref_latch;
+  std::mutex in_latch;
 };
 
 }  // namespace bustub
