@@ -2,7 +2,7 @@
 
 #include <list>
 #include <mutex>  // NOLINT
-#include <vector>
+#include <unordered_map>
 
 #include "buffer/replacer.h"
 #include "common/config.h"
@@ -34,15 +34,15 @@ class ClockReplacer : public Replacer {
   size_t Size() override;
 
  private:
-  // TODO(student): implement me!
-  size_t clock_hand;
-  size_t buffer_size;
-  std::vector<bool> ref_f;  // Whether unpined recently
-  std::vector<bool> in_f;   // Whether in the replacer
+  // a non-thread-safe implementation for unpinning page
+  void PinImpl(frame_id_t frame_id);
 
-  std::mutex clkh_latch;
-  std::mutex ref_latch;
-  std::mutex in_latch;
+  std::mutex mux_;
+  std::list<frame_id_t> frames_;
+  std::list<frame_id_t>::iterator clock_hand_;
+  std::unordered_map<frame_id_t, bool> ref_flag_;
+  std::unordered_map<frame_id_t, std::list<frame_id_t>::iterator> pin_pos_;
 };
 
 }  // namespace bustub
+
